@@ -11,7 +11,7 @@ on:
 jobs:
   build:
     name: Building for Android (Ubuntu 24.04)
-    runs-on: ubuntu-24.04 # Fixed: Removed extra '.04'
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout repository
@@ -63,7 +63,10 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: arcore-build
-          path: $GITHUB_WORKSPACE/repo/plugin/build/outputs/aar/*.aar
+          path: |
+            repo/**/*.aar
+            repo/**/*.gdip
+          if-no-files-found: error # Ensures build fails early if no files were generated
 
   release:
     if: github.event_name == 'push' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags'))
@@ -73,10 +76,10 @@ jobs:
 
     steps:
       - name: Download build artifacts
-        uses: actions/download-artifact@v4 # Fixed: Updated to v4 to match upload step
+        uses: actions/download-artifact@v4
         with:
           name: arcore-build
           path: ./aar-output
 
       - name: List downloaded files
-        run: ls -alh ./aar-output
+        run: ls -R ./aar-output
