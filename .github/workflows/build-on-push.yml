@@ -1,7 +1,12 @@
 # Workflow to automatically build and release an Android Plugin with GDExtension capabilities
 name: Build ARCore Plugin
-on: [push, pull_request]
-
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch: # Enables manual "Run workflow" button in GitHub Actions tab
+  
 jobs:
   build:
     name: Building for Android (Ubuntu 20.04)
